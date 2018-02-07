@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+    <title>Socket.IO chat</title>
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+        }
+        .friend_div{
+            width: 100%;height: 60px;border-bottom: 1px solid rgba(0,0,0,0.5);position: relative;
+        }
+        .friend_avatar{
+            position:absolute;width: 50px;left: 10px;top: 5px;
+        }
+        .friend_title{
+            position:absolute;left: 70px;top: 5px;font-size: 18px
+        }
+        .friend_text{
+            position:absolute;left: 70px;bottom: 5px;font-size: 16px;color: gray;font-weight: lighter
+        }
+    </style>
+</head>
+<body>
+<div style="width: 250px;height: 100vh;border-right: 1px solid rgba(0,0,0,0.5);position: fixed;top: 0;" id="friend">
+</div>
+<script
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+<script type="application/javascript">
+    var friend = document.getElementById("friend");
+    $.ajax({
+        type: 'POST',
+        url: "getFriendList",
+        data: {
+            id:"userIdDemo",
+            accessToken:3333
+        },
+        success: function (data) {
+            data = JSON.parse(data);
+            if (data.status === 0){
+                for (var i = 0;i<data.length;i++){
+                    var div = document.createElement("div"),
+                        img = document.createElement("img"),
+                        span_title = document.createElement("span"),
+                        span_text = document.createElement("span");
+                    img.src = data.data[i].avatar;
+                    span_title.innerText = data.data[i].name;
+                    span_text.innerText = "测试一下";
+                    div.className = "friend_div";
+                    img.className = "friend_avatar";
+                    span_text.className = "friend_text";
+                    span_title.className = "friend_title";
+                    friend.appendChild(div);
+                    div.appendChild(img);
+                    div.appendChild(span_title);
+                    div.appendChild(span_text);
+                }
+            }
+            console.log(data);
+        }
+    });
+</script>
+</body>
+</html>
