@@ -54,8 +54,6 @@ var acceptData = {
     ]
 };
 
-
-
 app.get('/', function(req, res){
     res.sendFile(__dirname + '/index.html');
 });
@@ -87,6 +85,7 @@ function needParams() {
         msg:"缺少参数"
     })
 }
+
 function inValid() {
     return JSON.stringify({
         status:-1,
@@ -110,18 +109,36 @@ function checkParams(req,method) {
     return true;
 }
 
+
+//这里用来统计现在重复登录的数量，主要用来判断是不是登陆了
+var onlineUser = {};
+
+//这里是io模块
 io.on('connection', function(socket){
     var uid = "";
     socket.on('getPersonalInfo',function (data) {
         uid = data.id;
+        var uidStatus = onlineUser[uid];
+        if (uidStatus===undefined){
+            //说明没有重复登录
+            onlineUser[uid] = 1;
+        }else{
+            onlineUser[uid] = (uidStatus+1);
+        }
         console.log(data.id + " 登陆成功");
     });
     socket.on('disconnect', function(){
+        var uidStatus = onlineUser[uid];
+        if (uidStatus!==1){
+            onlineUser[uid] = (uidStatus-1);
+        }else{
+            delete onlineUser[uid];
+        }
         console.log(uid + ' 退出了');
+        console.log(onlineUser);
     });
     socket.on('privateChat', function(toId,msg){
         io.emit("connection"+toId,msg);
-        // io.emit('chat message', msg);
     });
 });
 
