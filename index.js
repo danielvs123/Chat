@@ -12,15 +12,37 @@ var io = require('socket.io')(http);
 * 这里是假设数据
 * */
 var friendList = {
-    'userIdDemo':[
+    'userIdDemo1':[
         {
-            id:"123",
+            id:"userIdDemo2",
             name:"DanielVS",
-            avatar:"http://larissayuan.com/home/img/prisma.png"
+            avatar:"http://larissayuan.com/home/img/gorogoa.png"
         },{
-            id:"321",
+            id:"userIdDemo3",
             name:"larissa",
             avatar:"http://larissayuan.com/home/img/prisma.png"
+        }
+    ],
+    'userIdDemo2':[
+        {
+            id:"userIdDemo1",
+            name:"userIdDemo1",
+            avatar:"http://larissayuan.com/home/img/quartz.png"
+        },{
+            id:"userIdDemo3",
+            name:"larissa",
+            avatar:"http://larissayuan.com/home/img/prisma.png"
+        }
+    ],
+    'userIdDemo3':[
+        {
+            id:"userIdDemo1",
+            name:"userIdDemo1",
+            avatar:"http://larissayuan.com/home/img/quartz.png"
+        },{
+            id:"userIdDemo2",
+            name:"DanielVS",
+            avatar:"http://larissayuan.com/home/img/gorogoa.png"
         }
     ]
 };
@@ -89,12 +111,17 @@ function checkParams(req,method) {
 }
 
 io.on('connection', function(socket){
-    console.log('a user connected');
-    socket.on('disconnect', function(){
-        console.log('user disconnected');
+    var uid = "";
+    socket.on('getPersonalInfo',function (data) {
+        uid = data.id;
+        console.log(data.id + " 登陆成功");
     });
-    socket.on('chat message', function(msg){
-        io.emit('chat message', msg);
+    socket.on('disconnect', function(){
+        console.log(uid + ' 退出了');
+    });
+    socket.on('privateChat', function(toId,msg){
+        io.emit("connection"+toId,msg);
+        // io.emit('chat message', msg);
     });
 });
 
