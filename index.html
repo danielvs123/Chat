@@ -54,7 +54,7 @@
         });
         var opposite = (uid === "userIdDemo1")?"userIdDemo2":"userIdDemo1";
         socket.emit("privateChat",opposite,"你好，我是"+uid);
-        socket.on("connection"+uid,function (msg) {
+        socket.on("mailBox"+uid,function (msg) {
             console.log(msg);
         });
     }

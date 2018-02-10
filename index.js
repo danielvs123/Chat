@@ -9,6 +9,16 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 /*
+* 这里是mysql连接
+* */
+//这里需要自己修改configDemo.js,改名为config.js;
+var config = require('./config');
+var mysql      = require('mysql');
+var connection = mysql.createConnection(config.db);
+connection.connect();
+
+
+/*
 * 这里是假设数据
 * */
 var friendList = {
@@ -128,17 +138,19 @@ io.on('connection', function(socket){
         console.log(data.id + " 登陆成功");
     });
     socket.on('disconnect', function(){
-        var uidStatus = onlineUser[uid];
-        if (uidStatus!==1){
-            onlineUser[uid] = (uidStatus-1);
-        }else{
-            delete onlineUser[uid];
+        //防止重启服务器以后 没有uid以后会出现"":Nan的bug
+        if (uid!==""){
+            var uidStatus = onlineUser[uid];
+            if (uidStatus!==1){
+                onlineUser[uid] = (uidStatus-1);
+            }else{
+                delete onlineUser[uid];
+            }
+            console.log(uid + ' 退出了');
         }
-        console.log(uid + ' 退出了');
-        console.log(onlineUser);
     });
     socket.on('privateChat', function(toId,msg){
-        io.emit("connection"+toId,msg);
+        io.emit("mailBox"+toId,msg);
     });
 });
 
