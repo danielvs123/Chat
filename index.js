@@ -123,9 +123,31 @@ function checkParams(req,method) {
 //这里用来统计现在重复登录的数量，主要用来判断是不是登陆了
 var onlineUser = {};
 
+//status = 1未读
+//       = 0已读
+var privateChatSql = 'INSERT INTO privateChat(fromId,toId,msg,status) VALUES(?,?,?,?)';
+
+function insertSql(sqlStr,addSqlParams) {
+    connection.query(sqlStr,addSqlParams,function (err, result) {
+        if(err){
+            console.log('[INSERT ERROR] - ',err.message);
+            return;
+        }
+    });
+}
+
 //这里是io模块
 io.on('connection', function(socket){
     var uid = "";
+    /*
+    * 设置自己获取的消息的格式
+    * {
+    *   type = 1;//代表未读消息
+    *   type = 0;//代表及时消失
+    *   type = -1;//代表系统消息
+    *   data:{}
+    * }
+    * */
     socket.on('getPersonalInfo',function (data) {
         uid = data.id;
         var uidStatus = onlineUser[uid];
@@ -135,7 +157,15 @@ io.on('connection', function(socket){
         }else{
             onlineUser[uid] = (uidStatus+1);
         }
-        console.log(data.id + " 登陆成功");
+        console.log(data.id + " 登陆成功。开始获取未读邮件");
+        connection.query("SELECT * FROM privateChat WHERE status = 1 and toId = '"+uid+"' order by id desc", function (err, result, fields) {
+            if (result!==0){
+                io.emit("mailBox"+uid,JSON.stringify({
+                    type:1,
+                    data:result
+                }))
+            }
+        });
     });
     socket.on('disconnect', function(){
         //防止重启服务器以后 没有uid以后会出现"":Nan的bug
@@ -150,7 +180,15 @@ io.on('connection', function(socket){
         }
     });
     socket.on('privateChat', function(toId,msg){
-        io.emit("mailBox"+toId,msg);
+        if (onlineUser[toId] === undefined){
+            insertSql(privateChatSql,[uid,toId,msg,1]);
+        }else{
+            insertSql(privateChatSql,[uid,toId,msg,0]);
+            io.emit("mailBox"+toId,JSON.stringify({
+                type:0,
+                data:msg
+            }));
+        }
     });
 });
 
