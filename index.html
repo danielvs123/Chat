@@ -26,6 +26,63 @@
             width: 100%;height: 50px;line-height: 50px;text-align: center;
         }
     </style>
+    <style type="text/css">
+        .sender{
+            clear:both;
+        }
+        .sender div:nth-of-type(1){
+            float: left;
+        }
+        .sender div:nth-of-type(2){
+            background-color: aquamarine;
+            float: left;
+            margin: 0 20px 10px 15px;
+            padding: 10px 10px 10px 0px;
+            border-radius:7px;
+        }
+
+        .receiver div:first-child img,
+        .sender div:first-child img{
+            width:50px;
+            height: 50px;
+        }
+
+        .receiver{
+            clear:both;
+        }
+        .receiver div:nth-child(1){
+            float: right;
+        }
+        .receiver div:nth-of-type(2){
+            float:right;
+            background-color: gold;
+            margin: 0 10px 10px 20px;
+            padding: 10px 0px 10px 10px;
+            border-radius:7px;
+        }
+
+        .left_triangle{
+            height:0px;
+            width:0px;
+            border-width:8px;
+            border-style:solid;
+            border-color:transparent aquamarine transparent transparent;
+            position: relative;
+            left:-16px;
+            top:3px;
+        }
+
+        .right_triangle{
+            height:0px;
+            width:0px;
+            border-width:8px;
+            border-style:solid;
+            border-color:transparent transparent transparent gold;
+            position: relative;
+            right:-16px;
+            top:3px;
+        }
+    </style>
 </head>
 <body>
 <div id="robot_outer">
@@ -33,6 +90,28 @@
     <div class="robot">userIdDemo2</div>
 </div>
 <div style="width: 250px;height: 100vh;border-right: 1px solid rgba(0,0,0,0.5);position: fixed;top: 0;" id="friend">
+
+</div>
+<div style="width: 450px;height: 100vh;border-right: 1px solid rgba(0,0,0,0.5);position: fixed;top: 0;right: 0" id="chat">
+    <div class="sender">
+        <div>
+            <img src="chatTemplateExample2_files/cat.jpg">
+        </div>
+        <div>
+            <div class="left_triangle"></div>
+            <span> hello, man! </span>
+        </div>
+    </div>
+    <!-- Right -->
+    <div class="receiver">
+        <div>
+            <img src="chatTemplateExample2_files/cat.jpg">
+        </div>
+        <div>
+            <div class="right_triangle"></div>
+            <span> hello world </span>
+        </div>
+    </div>
 </div>
 <script src="/socket.io/socket.io.js"></script>
 <script
@@ -59,7 +138,9 @@
         });
     }
 
-    var friend = document.getElementById("friend");
+    var friend = document.getElementById("friend"),
+        personalInfo = {},
+        friendsInfo = {};
 
     function getFriendList() {
         //获取好友列表;
@@ -74,11 +155,11 @@
                 data = JSON.parse(data);
                 if (data.status === 0){
                     for (var i = 0;i<data.length;i++){
+                        //创建页面
                         var div = document.createElement("div"),
                             img = document.createElement("img"),
                             span_title = document.createElement("span"),
                             span_text = document.createElement("span");
-                        console.log(data.data[i].avatar);
                         img.src = data.data[i].avatar;
                         span_title.innerText = data.data[i].name;
                         span_text.innerText = "测试一下";
@@ -90,11 +171,41 @@
                         div.appendChild(img);
                         div.appendChild(span_title);
                         div.appendChild(span_text);
+
+                        //插入好友列表
+                        friendsInfo[data.data[i].id] = {
+                            name:data.data[i].name,
+                            avatar:data.data[i].avatar
+                        };
                     }
                 }
-                console.log(data);
             }
         });
+        $.ajax({
+            type: 'POST',
+            url: "getPrivateInfo",
+            data: {
+                id:uid,
+                accessToken:3333
+            },
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.status === 0){
+                    personalInfo = {
+                        name:data.data.name,
+                        avatar:data.data.avatar
+                    }
+                }
+            }
+        });
+    }
+
+    function sender() {
+        var sender = document.createElement("div");
+        div.className = "sender";
+        var avatar = document.createElement("div"),
+            avatarImg = document.createElement("img");
+
     }
 </script>
 </body>

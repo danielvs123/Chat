@@ -56,6 +56,21 @@ var friendList = {
         }
     ]
 };
+
+var privateInfo = {
+    'userIdDemo1':{
+        name:"userIdDemo1",
+        avatar:"http://larissayuan.com/home/img/quartz.png"
+    },
+    'userIdDemo2':{
+        name:"DanielVS",
+        avatar:"http://larissayuan.com/home/img/gorogoa.png"
+    },
+    'userIdDemo3':{
+        name:"larissa",
+        avatar:"http://larissayuan.com/home/img/prisma.png"
+    }
+};
 //假设数据的结束
 
 var acceptData = {
@@ -80,6 +95,24 @@ app.post('/getFriendList',function (req,res) {
                 length:length,
                 //TODO    这是模拟拘束可以对接数据库
                 data:rtnData
+            }))
+        }else{
+            res.send(inValid());
+        }
+    }else{
+        res.send(needParams());
+    }
+});
+
+app.post('/getPrivateInfo',function (req,res) {
+    if (checkParams(req,"getFriendList")){
+        if (checkValidation(req.body.accessToken)){
+            var id = req.body.id;
+            res.send(JSON.stringify({
+                status:0,
+                msg:"okay",
+                //TODO    这是模拟拘束可以对接数据库
+                data:privateInfo[id]
             }))
         }else{
             res.send(inValid());
