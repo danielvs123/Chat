@@ -20,7 +20,7 @@
             position:absolute;left: 70px;bottom: 5px;font-size: 16px;color: gray;font-weight: lighter
         }
         #robot_outer{
-            width: 100px;height: 100px;position: fixed;right: 0;border:1px solid gray;
+            width: 100px;height: 100px;position: fixed;right: 0;border:1px solid gray;z-index: 999;
         }
         .robot{
             width: 100%;height: 50px;line-height: 50px;text-align: center;
@@ -93,25 +93,6 @@
 
 </div>
 <div style="width: 450px;height: 100vh;border-right: 1px solid rgba(0,0,0,0.5);position: fixed;top: 0;right: 0" id="chat">
-    <div class="sender">
-        <div>
-            <img src="chatTemplateExample2_files/cat.jpg">
-        </div>
-        <div>
-            <div class="left_triangle"></div>
-            <span> hello, man! </span>
-        </div>
-    </div>
-    <!-- Right -->
-    <div class="receiver">
-        <div>
-            <img src="chatTemplateExample2_files/cat.jpg">
-        </div>
-        <div>
-            <div class="right_triangle"></div>
-            <span> hello world </span>
-        </div>
-    </div>
 </div>
 <script src="/socket.io/socket.io.js"></script>
 <script
@@ -119,13 +100,18 @@
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
 <script type="application/javascript">
+    var uid = "";
+    var friend = document.getElementById("friend"),
+        chatDiv = document.getElementById("chat"),
+        personalInfo = {},
+        friendsInfo = {};
     $(".robot").click(function () {
         $('#robot_outer').hide();
         uid =  this.innerText;
         connect();
+        getPersonalInfo();
         getFriendList();
     });
-    var uid = "userIdDemo1";
     function connect() {
         var socket = io();
         socket.emit("getPersonalInfo",{
@@ -137,10 +123,6 @@
             console.log(msg);
         });
     }
-
-    var friend = document.getElementById("friend"),
-        personalInfo = {},
-        friendsInfo = {};
 
     function getFriendList() {
         //获取好友列表;
@@ -181,6 +163,9 @@
                 }
             }
         });
+    }
+
+    function getPersonalInfo() {
         $.ajax({
             type: 'POST',
             url: "getPrivateInfo",
@@ -189,6 +174,7 @@
                 accessToken:3333
             },
             success: function (data) {
+                console.log("123");
                 data = JSON.parse(data);
                 if (data.status === 0){
                     personalInfo = {
@@ -196,16 +182,51 @@
                         avatar:data.data.avatar
                     }
                 }
+                sender();
+                getter();
             }
         });
     }
 
     function sender() {
         var sender = document.createElement("div");
-        div.className = "sender";
+        sender.className = "sender";
         var avatar = document.createElement("div"),
             avatarImg = document.createElement("img");
-
+        avatarImg.src = personalInfo.avatar;
+        var chat = document.createElement("div"),
+            triangle = document.createElement("div"),
+            div = document.createElement("div"),
+            span = document.createElement("span");
+        triangle.className = "left_triangle";
+        span.innerText = "hello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello world";
+        chat.appendChild(triangle);
+        chat.appendChild(div);
+        div.appendChild(span);
+        avatar.appendChild(avatarImg);
+        sender.appendChild(avatar);
+        sender.appendChild(chat);
+        chatDiv.appendChild(sender);
+    }
+    function getter() {
+        var sender = document.createElement("div");
+        sender.className = "receiver";
+        var avatar = document.createElement("div"),
+            avatarImg = document.createElement("img");
+        avatarImg.src = personalInfo.avatar;
+        var chat = document.createElement("div"),
+            triangle = document.createElement("div"),
+            div = document.createElement("div"),
+            span = document.createElement("span");
+        span.innerText = "hello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello world";
+        triangle.className = "right_triangle";
+        chat.appendChild(triangle);
+        chat.appendChild(div);
+        div.appendChild(span);
+        avatar.appendChild(avatarImg);
+        sender.appendChild(avatar);
+        sender.appendChild(chat);
+        chatDiv.appendChild(sender);
     }
 </script>
 </body>
