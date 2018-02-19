@@ -8,7 +8,7 @@
             padding: 0;
         }
         .friend_div{
-            width: 100%;height: 60px;border-bottom: 1px solid rgba(0,0,0,0.5);position: relative;
+            width: 100%;height: 60px;border-bottom: 1px solid rgba(0,0,0,0.5);position: relative;overflow: hidden;
         }
         .friend_avatar{
             position:absolute;width: 50px;left: 10px;top: 5px;
@@ -104,7 +104,14 @@
     var friend = document.getElementById("friend"),
         chatDiv = document.getElementById("chat"),
         personalInfo = {},
-        friendsInfo = {};
+        friendsInfo = {},
+        friendViewRenderer = new FriendViewStack();
+
+    // friendsInfo[data.data[i].id] = {
+    //     name:data.data[i].name,
+    //     avatar:data.data[i].avatar
+    // };
+
     $(".robot").click(function () {
         $('#robot_outer').hide();
         uid =  this.innerText;
@@ -112,15 +119,96 @@
         getPersonalInfo();
         getFriendList();
     });
+
+    //左侧好友列表的Stack();
+    function FriendViewStack() {
+        this.dataStore = [];
+        this.push = function (data) {
+            var arr = [],
+                id = (data.toId === uid)?data.fromId:data.toId,
+                //0代表接受 1代表送出
+                type = (data.toId === uid)?0:1;
+            for (var i = 0;i<this.dataStore.length;i++){
+                arr.push(this.dataStore[i].id);
+            }
+            var indexOf = arr.indexOf(id);
+            var tmpData = {};
+            //就是没有这个数据
+            if (indexOf === -1){
+                tmpData = {
+                    id: id,
+                    type: type,
+                    msg: data.msg
+                }
+            }else{
+                tmpData = {
+                    id: id,
+                    type: type,
+                    msg: data.msg
+                };
+                this.dataStore.splice(indexOf,1);
+            }
+            this.dataStore.unshift(tmpData);
+        };
+        //测试用
+        this.print = function () {
+            console.log(this.dataStore);
+        };
+        this.renderFriendView = function () {
+            friend.innerHTML = "";
+            for (var i = 0;i < this.dataStore.length ; i++){
+                printFriendView({
+                    avatar:friendsInfo[this.dataStore[i].id].avatar,
+                    name:friendsInfo[this.dataStore[i].id].name,
+                    msg:this.dataStore[i].msg
+                })
+            }
+        }
+    }
+
+    function friendViewChat(data) {
+        var div = document.createElement("div"),
+            img = document.createElement("img"),
+            span_title = document.createElement("span"),
+            span_text = document.createElement("span");
+        img.src = friendsInfo[data.id].avatar;
+        span_title.innerText = friendsInfo[data.id].name;
+        span_text.innerText = data.msg;
+        div.className = "friend_div";
+        img.className = "friend_avatar";
+        span_text.className = "friend_text";
+        span_title.className = "friend_title";
+        friend.appendChild(div);
+        div.appendChild(img);
+        div.appendChild(span_title);
+        div.appendChild(span_text);
+    }
+
     function connect() {
         var socket = io();
         socket.emit("getPersonalInfo",{
             id:uid
         });
         var opposite = (uid === "userIdDemo1")?"userIdDemo2":"userIdDemo1";
-        socket.emit("privateChat",opposite,"你好，我是"+uid);
+        socket.emit("privateChat",opposite,new Date().getTime()+uid);
         socket.on("mailBox"+uid,function (msg) {
-            console.log(msg);
+            var data = JSON.parse(msg),
+                type = data.type;
+            if (type === 1){
+                for (var i = data.data.length-1;i>=0;i--){
+                    friendViewRenderer.push(data.data[i]);
+                }
+                friendViewRenderer.print();
+                friendViewRenderer.renderFriendView();
+            }else{
+                var tmpData = {
+                    fromId:data.data.id,
+                    toId:uid,
+                    msg:data.data.msg
+                };
+                friendViewRenderer.push(tmpData);
+                friendViewRenderer.renderFriendView();
+            }
         });
     }
 
@@ -138,22 +226,7 @@
                 if (data.status === 0){
                     for (var i = 0;i<data.length;i++){
                         //创建页面
-                        var div = document.createElement("div"),
-                            img = document.createElement("img"),
-                            span_title = document.createElement("span"),
-                            span_text = document.createElement("span");
-                        img.src = data.data[i].avatar;
-                        span_title.innerText = data.data[i].name;
-                        span_text.innerText = "测试一下";
-                        div.className = "friend_div";
-                        img.className = "friend_avatar";
-                        span_text.className = "friend_text";
-                        span_title.className = "friend_title";
-                        friend.appendChild(div);
-                        div.appendChild(img);
-                        div.appendChild(span_title);
-                        div.appendChild(span_text);
-
+                        printFriendView(data.data[i]);
                         //插入好友列表
                         friendsInfo[data.data[i].id] = {
                             name:data.data[i].name,
@@ -165,6 +238,28 @@
         });
     }
 
+    function printFriendView(data) {
+        var div = document.createElement("div"),
+            img = document.createElement("img"),
+            span_title = document.createElement("span"),
+            span_text = document.createElement("span");
+        img.src = data.avatar;
+        span_title.innerText = data.name;
+        if (data.msg === undefined){
+            span_text.innerText = "";
+        }else{
+            span_text.innerText = data.msg;
+        }
+        div.className = "friend_div";
+        img.className = "friend_avatar";
+        span_text.className = "friend_text";
+        span_title.className = "friend_title";
+        friend.appendChild(div);
+        div.appendChild(img);
+        div.appendChild(span_title);
+        div.appendChild(span_text);
+    }
+
     function getPersonalInfo() {
         $.ajax({
             type: 'POST',
@@ -174,7 +269,6 @@
                 accessToken:3333
             },
             success: function (data) {
-                console.log("123");
                 data = JSON.parse(data);
                 if (data.status === 0){
                     personalInfo = {
@@ -199,7 +293,7 @@
             div = document.createElement("div"),
             span = document.createElement("span");
         triangle.className = "left_triangle";
-        span.innerText = "hello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello world";
+        span.innerText = "";
         chat.appendChild(triangle);
         chat.appendChild(div);
         div.appendChild(span);
@@ -208,6 +302,7 @@
         sender.appendChild(chat);
         chatDiv.appendChild(sender);
     }
+
     function getter() {
         var sender = document.createElement("div");
         sender.className = "receiver";
@@ -218,7 +313,7 @@
             triangle = document.createElement("div"),
             div = document.createElement("div"),
             span = document.createElement("span");
-        span.innerText = "hello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello world";
+        span.innerText = "";
         triangle.className = "right_triangle";
         chat.appendChild(triangle);
         chat.appendChild(div);

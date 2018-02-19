@@ -105,6 +105,7 @@ app.post('/getFriendList',function (req,res) {
 });
 
 app.post('/getPrivateInfo',function (req,res) {
+    console.log("hhh");
     if (checkParams(req,"getFriendList")){
         if (checkValidation(req.body.accessToken)){
             var id = req.body.id;
@@ -219,7 +220,10 @@ io.on('connection', function(socket){
             insertSql(privateChatSql,[uid,toId,msg,0]);
             io.emit("mailBox"+toId,JSON.stringify({
                 type:0,
-                data:msg
+                data:{
+                    id:uid,
+                    msg:msg
+                }
             }));
         }
     });
