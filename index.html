@@ -20,7 +20,7 @@
             position:absolute;left: 70px;bottom: 5px;font-size: 16px;color: gray;font-weight: lighter
         }
         #robot_outer{
-            width: 100px;height: 100px;position: fixed;right: 0;border:1px solid gray;z-index: 999;
+            width: 100px;height: 150px;position: fixed;right: 0;border:1px solid gray;z-index: 99;
         }
         .robot{
             width: 100%;height: 50px;line-height: 50px;text-align: center;
@@ -88,9 +88,9 @@
 <div id="robot_outer">
     <div class="robot">userIdDemo1</div>
     <div class="robot">userIdDemo2</div>
+    <div class="robot">userIdDemo3</div>
 </div>
-<div style="width: 250px;height: 100vh;border-right: 1px solid rgba(0,0,0,0.5);position: fixed;top: 0;" id="friend">
-
+<div style="width: 250px;height: 100vh;border-right: 1px solid rgba(0,0,0,0.5);position: fixed;top: 0;z-index: 999" id="friend">
 </div>
 <div style="width: 450px;height: 100vh;border-right: 1px solid rgba(0,0,0,0.5);position: fixed;top: 0;right: 0" id="chat">
 </div>
@@ -103,9 +103,11 @@
     var uid = "";
     var friend = document.getElementById("friend"),
         chatDiv = document.getElementById("chat"),
+        onShowedChat = "",
         personalInfo = {},
         friendsInfo = {},
-        friendViewRenderer = new FriendViewStack();
+        friendViewRenderer = new FriendViewStack(),
+        liveChatRenderer = new FullChatInfo();
 
     // friendsInfo[data.data[i].id] = {
     //     name:data.data[i].name,
@@ -115,6 +117,7 @@
     $(".robot").click(function () {
         $('#robot_outer').hide();
         uid =  this.innerText;
+        document.title = uid;
         connect();
         getPersonalInfo();
         getFriendList();
@@ -160,8 +163,48 @@
                 printFriendView({
                     avatar:friendsInfo[this.dataStore[i].id].avatar,
                     name:friendsInfo[this.dataStore[i].id].name,
-                    msg:this.dataStore[i].msg
+                    msg:this.dataStore[i].msg,
+                    id:this.dataStore[i].id
                 })
+            }
+        }
+    }
+
+    function FullChatInfo() {
+        this.dataStore = {};
+        this.push = function (data) {
+            var id = data.id,
+                msg = data.msg,
+                type = 0;
+            if (this.dataStore[id] !== undefined){
+                this.dataStore[id].push({
+                    msg:msg,
+                    type:type
+                })
+            } else{
+                this.dataStore[id] = [{
+                    msg:msg,
+                    type:type
+                }]
+            }
+        };
+        //测试用
+        this.print = function () {
+            console.log(this.dataStore);
+        };
+        //绘制
+        this.render = function (id) {
+            if (this.dataStore[id]!==undefined){
+                var dataset = this.dataStore[id];
+                for (var i = 0;i<dataset.length;i++){
+                    var type = dataset[i].type,
+                        msg = dataset[i].msg;
+                    if (type === 0){
+                        getter(msg,id);
+                    }else{
+                        sender(msg);
+                    }
+                }
             }
         }
     }
@@ -195,8 +238,13 @@
             var data = JSON.parse(msg),
                 type = data.type;
             if (type === 1){
+                console.log(data.data);
                 for (var i = data.data.length-1;i>=0;i--){
                     friendViewRenderer.push(data.data[i]);
+                    liveChatRenderer.push({
+                        id:data.data[i].fromId,
+                        msg:data.data[i].msg
+                    });
                 }
                 friendViewRenderer.print();
                 friendViewRenderer.renderFriendView();
@@ -208,6 +256,10 @@
                 };
                 friendViewRenderer.push(tmpData);
                 friendViewRenderer.renderFriendView();
+                liveChatRenderer.push({
+                    id:data.data.id,
+                    msg:data.data.msg
+                });
             }
         });
     }
@@ -251,6 +303,13 @@
             span_text.innerText = data.msg;
         }
         div.className = "friend_div";
+        div.id = data.id;
+        div.onclick = function () {
+            if(onShowedChat!==this.id){
+                //需要重新绘制聊天
+                liveChatRenderer.render(this.id);
+            }
+        };
         img.className = "friend_avatar";
         span_text.className = "friend_text";
         span_title.className = "friend_title";
@@ -276,13 +335,11 @@
                         avatar:data.data.avatar
                     }
                 }
-                sender();
-                getter();
             }
         });
     }
 
-    function sender() {
+    function sender(msg) {
         var sender = document.createElement("div");
         sender.className = "sender";
         var avatar = document.createElement("div"),
@@ -293,7 +350,7 @@
             div = document.createElement("div"),
             span = document.createElement("span");
         triangle.className = "left_triangle";
-        span.innerText = "";
+        span.innerText = msg;
         chat.appendChild(triangle);
         chat.appendChild(div);
         div.appendChild(span);
@@ -303,17 +360,17 @@
         chatDiv.appendChild(sender);
     }
 
-    function getter() {
+    function getter(msg,id) {
         var sender = document.createElement("div");
         sender.className = "receiver";
         var avatar = document.createElement("div"),
             avatarImg = document.createElement("img");
-        avatarImg.src = personalInfo.avatar;
+        avatarImg.src = friendsInfo[id].avatar;
         var chat = document.createElement("div"),
             triangle = document.createElement("div"),
             div = document.createElement("div"),
             span = document.createElement("span");
-        span.innerText = "";
+        span.innerText = msg;
         triangle.className = "right_triangle";
         chat.appendChild(triangle);
         chat.appendChild(div);
