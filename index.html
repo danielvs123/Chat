@@ -83,6 +83,14 @@
             top:3px;
         }
     </style>
+    <style type="text/css">
+        #submit{
+            width: 200px;height: 32px;position: fixed;bottom: 0;right: 0;background-color: cornflowerblue;text-align: center;line-height: 32px
+        }
+        #chat_input{
+            width: 245px;height: 28px;position: fixed;bottom: 0;right: 200px;
+        }
+    </style>
 </head>
 <body>
 <div id="robot_outer">
@@ -92,7 +100,11 @@
 </div>
 <div style="width: 250px;height: 100vh;border-right: 1px solid rgba(0,0,0,0.5);position: fixed;top: 0;z-index: 999" id="friend">
 </div>
-<div style="width: 450px;height: 100vh;border-right: 1px solid rgba(0,0,0,0.5);position: fixed;top: 0;right: 0" id="chat">
+<div style="width: 450px;height: 100vh;border-right: 1px solid rgba(0,0,0,0.5);position: fixed;top: 0;right: 0;border-left: 1px solid gray;display: none;overflow: scroll" id="chat">
+    <div style="width: 100%;overflow: scroll" id="chatTotal"></div>
+    <div style="width: 100%;height: 60px"></div>
+    <input type="text" id="chat_input" />
+    <div id="submit">发送</div>
 </div>
 <script src="/socket.io/socket.io.js"></script>
 <script
@@ -103,12 +115,12 @@
     var uid = "";
     var friend = document.getElementById("friend"),
         chatDiv = document.getElementById("chat"),
+        chatTotal = document.getElementById("chatTotal");
         onShowedChat = "",
         personalInfo = {},
         friendsInfo = {},
         friendViewRenderer = new FriendViewStack(),
         liveChatRenderer = new FullChatInfo();
-
     // friendsInfo[data.data[i].id] = {
     //     name:data.data[i].name,
     //     avatar:data.data[i].avatar
@@ -122,6 +134,7 @@
         getPersonalInfo();
         getFriendList();
     });
+
 
     //左侧好友列表的Stack();
     function FriendViewStack() {
@@ -194,6 +207,7 @@
         };
         //绘制
         this.render = function (id) {
+            $('#chat').show();
             if (this.dataStore[id]!==undefined){
                 var dataset = this.dataStore[id];
                 for (var i = 0;i<dataset.length;i++){
@@ -206,6 +220,10 @@
                     }
                 }
             }
+        };
+        //这里是用来添加新的聊天用的
+        this.appendDiv = function (data) {
+            getter(data.msg,data.id);
         }
     }
 
@@ -238,7 +256,6 @@
             var data = JSON.parse(msg),
                 type = data.type;
             if (type === 1){
-                console.log(data.data);
                 for (var i = data.data.length-1;i>=0;i--){
                     friendViewRenderer.push(data.data[i]);
                     liveChatRenderer.push({
@@ -260,7 +277,27 @@
                     id:data.data.id,
                     msg:data.data.msg
                 });
+                if (data.data.id === onShowedChat){
+                    liveChatRenderer.appendDiv({
+                        id:data.data.id,
+                        msg:data.data.msg
+                    });
+                }
+                // liveChatRenderer.print();
+                // liveChatRenderer.render();
             }
+        });
+        //submit发送
+        $chat_input = $('#chat_input');
+        $('#submit').click(function () {
+            var value = $chat_input.val();
+            if (value === ""){
+                alert("不能为空");
+                return false;
+            }
+            socket.emit("privateChat",onShowedChat,value);
+            sender(value);
+            $chat_input.val("");
         });
     }
 
@@ -308,6 +345,7 @@
             if(onShowedChat!==this.id){
                 //需要重新绘制聊天
                 liveChatRenderer.render(this.id);
+                onShowedChat = this.id;
             }
         };
         img.className = "friend_avatar";
@@ -357,7 +395,7 @@
         avatar.appendChild(avatarImg);
         sender.appendChild(avatar);
         sender.appendChild(chat);
-        chatDiv.appendChild(sender);
+        chatTotal.appendChild(sender);
     }
 
     function getter(msg,id) {
@@ -378,7 +416,7 @@
         avatar.appendChild(avatarImg);
         sender.appendChild(avatar);
         sender.appendChild(chat);
-        chatDiv.appendChild(sender);
+        chatTotal.appendChild(sender);
     }
 </script>
 </body>
