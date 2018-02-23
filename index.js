@@ -199,6 +199,10 @@ io.on('connection', function(socket){
                     data:result
                 }))
             }
+            connection.query("UPDATE privateChat SET privateChat.status = 0 WHERE privateChat.toId = '"+uid+"' and privateChat.status = 1", function (err, result) {
+                if (err) throw err;
+                console.log(result.affectedRows + " record(s) updated");
+            });
         });
     });
     socket.on('disconnect', function(){
