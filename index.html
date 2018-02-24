@@ -207,6 +207,7 @@
         };
         //绘制
         this.render = function (id) {
+            document.getElementById("chatTotal").innerHTML = "";
             $('#chat').show();
             if (this.dataStore[id]!==undefined){
                 var dataset = this.dataStore[id];
@@ -251,7 +252,6 @@
             id:uid
         });
         var opposite = (uid === "userIdDemo1")?"userIdDemo2":"userIdDemo1";
-        socket.emit("privateChat",opposite,new Date().getTime()+uid);
         socket.on("mailBox"+uid,function (msg) {
             var data = JSON.parse(msg),
                 type = data.type;
@@ -283,8 +283,6 @@
                         msg:data.data.msg
                     });
                 }
-                // liveChatRenderer.print();
-                // liveChatRenderer.render();
             }
         });
         //submit发送
