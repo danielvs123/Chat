@@ -107,6 +107,7 @@
     <div id="submit">发送</div>
 </div>
 <script src="/socket.io/socket.io.js"></script>
+<script src="https://cdn.rawgit.com/mozilla/localForage/master/dist/localforage.js"></script>
 <script
         src="https://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
@@ -126,14 +127,20 @@
     //     avatar:data.data[i].avatar
     // };
 
-    $(".robot").click(function () {
-        $('#robot_outer').hide();
-        uid =  this.innerText;
-        document.title = uid;
-        connect();
-        getPersonalInfo();
-        getFriendList();
+    //这边必须先要求初始化数据库
+    localforage.setDriver([
+        localforage.INDEXEDDB
+    ]).then(function() {
+        $(".robot").click(function () {
+            $('#robot_outer').hide();
+            uid =  this.innerText;
+            document.title = uid;
+            connect();
+            getPersonalInfo();
+            getFriendList();
+        });
     });
+
 
 
     //左侧好友列表的Stack();
@@ -343,6 +350,7 @@
             if(onShowedChat!==this.id){
                 //需要重新绘制聊天
                 liveChatRenderer.render(this.id);
+                liveChatRenderer.print();
                 onShowedChat = this.id;
             }
         };

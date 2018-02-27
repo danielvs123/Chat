@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script src="https://cdn.rawgit.com/mozilla/localForage/master/dist/localforage.js"></script>
+<script type="application/javascript">
+    localforage.setDriver([
+        localforage.INDEXEDDB
+    ]).then(function() {
+        var key = 'STORE_KEY';
+        var value = 'asdf';
+
+        var users = [ {id: 1, fullName: 'Matt'}, {id: 2, fullName: 'Bob'} ];
+        localforage.setItem('users', users, function(result) {
+            console.log(result);
+        });
+        localforage.getItem('users',function (value) {
+             var data = {id:3,fullName:'Daniel'};
+             // data.concat(value);
+            localforage.removeItem('users').then(function() {
+                localforage.setItem('users', data, function(result) {
+                    console.log(result);
+                });
+            }).catch(function(err) {
+                console.log(err);
+            });
+        });
+    });
+</script>
+</body>
+</html>
