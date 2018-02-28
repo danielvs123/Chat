@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        body{
+            margin: 0;
+            padding: 0;
+        }
+        #body-container{
+            width: 100%;
+            height: 100vh;
+        }
+        #main-bar{
+            width: 70px;background-color: rgb(38,38,38);position: fixed;height: 100%;text-align: center;
+            top: 0;left: 0;
+        }
+        #sub-bar{
+            width: 270px;background-color: white;position: fixed;height: 100%;text-align: center;
+            border-right: 1px solid rgb(229,229,229);left: 70px;
+            top: 0;overflow: scroll;
+        }
+        #search-box,.chatListDom{
+            width: 100%;
+            height: 65px;
+            border-bottom: 1px solid rgb(229,229,229);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+        #search-box{
+            width: 270px;
+            position: fixed;
+        }
+        #search-box input{
+            padding: 6px;
+            border: none;
+            margin-top: 12px;
+            font-size: 17px;
+            background-color: rgb(225,225,225);
+        }
+        #search-box input:focus{
+            background-color: white;
+            border: 1px solid rgb(229,229,229);
+        }
+        #friendChatListView{
+            width: 100%;
+        }
+        .selector-box{
+            margin-top: 25px;
+        }
+        .chatListTitle{
+            text-align: left;
+            font-size: 19px;
+        }
+        .chatListTime{
+            text-align: left;
+            font-size: 14px;
+            color: rgb(175,158,144);
+        }
+        .chatListLastUpdate{
+            text-align: left;
+            font-size: 17px;
+            color: rgb(175,158,144);
+            width: 164px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<div id="body-container">
+    <div id="main-bar">
+        <img src="http://xdpimage.oss-cn-qingdao.aliyuncs.com/activity/common/share_icon.jpg" style="width: 70%;border-radius: 10px;margin-top: 60px">
+        <div class="selector-box" id="message-box">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 473 473" style="enable-background:new 0 0 473 473;" xml:space="preserve" width="30px" height="30px">
+<g>
+	<g>
+		<path class="message-icon" d="M403.581,69.3c-44.7-44.7-104-69.3-167.2-69.3s-122.5,24.6-167.2,69.3c-86.4,86.4-92.4,224.7-14.9,318    c-7.6,15.3-19.8,33.1-37.9,42c-8.7,4.3-13.6,13.6-12.1,23.2s8.9,17.1,18.5,18.6c4.5,0.7,10.9,1.4,18.7,1.4    c20.9,0,51.7-4.9,83.2-27.6c35.1,18.9,73.5,28.1,111.6,28.1c61.2,0,121.8-23.7,167.4-69.3c44.7-44.7,69.3-104,69.3-167.2    S448.281,114,403.581,69.3z M384.481,384.6c-67.5,67.5-172,80.9-254.2,32.6c-5.4-3.2-12.1-2.2-16.4,2.1c-0.4,0.2-0.8,0.5-1.1,0.8    c-27.1,21-53.7,25.4-71.3,25.4h-0.1c20.3-14.8,33.1-36.8,40.6-53.9c1.2-2.9,1.4-5.9,0.7-8.7c-0.3-2.7-1.4-5.4-3.3-7.6    c-73.2-82.7-69.4-208.7,8.8-286.9c81.7-81.7,214.6-81.7,296.2,0C466.181,170.1,466.181,302.9,384.481,384.6z" fill="rgb(123,123,123)"/>
+		<circle class="message-icon" cx="236.381" cy="236.5" r="16.6" fill="rgb(123,123,123)"/>
+		<circle class="message-icon" cx="321.981" cy="236.5" r="16.6" fill="rgb(123,123,123)"/>
+		<circle class="message-icon" cx="150.781" cy="236.5" r="16.6" fill="rgb(123,123,123)"/>
+	</g>
+</g>
+</svg>
+
+        </div>
+        <div class="selector-box" id="friend-box">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve" width="35px" height="35px">
+<g>
+	<g>
+		<path class="friend-icon" d="M158.014,8.882c-23.171,0-44.411,9.112-59.807,25.656c-16.028,17.221-24.498,40.729-24.498,67.984    c0,28.607,9.416,57.55,25.831,79.404c7.405,9.86,6.871,23.561-1.271,32.579c-9.202,10.194-21.221,16.927-34.754,19.473    C26.713,240.896,0,273.003,0,310.32v52.906h95.926v-15.673H15.673V310.32c0-29.783,21.339-55.411,50.738-60.938    c16.933-3.184,31.973-11.612,43.493-24.373c13.155-14.574,14.068-36.651,2.168-52.496c-14.208-18.915-22.69-45.079-22.69-69.991    c0-23.222,7.019-43.037,20.297-57.306c12.399-13.322,29.564-20.66,48.427-20.66c25.39,0,46.824,12.913,58.805,35.426l13.837-7.363    C216.174,25.231,189.017,8.882,158.014,8.882z" fill="rgb(123,123,123)"/>
+	</g>
+</g>
+<g>
+	<g>
+		<rect class="friend-icon" x="218.63" y="411.899" width="102.58" height="15.673" fill="rgb(123,123,123)"/>
+	</g>
+</g>
+<g>
+	<g>
+		<path class="friend-icon" d="M370.445,298.326c-13.538-2.55-25.555-9.283-34.753-19.474c-8.147-9.024-8.684-22.727-1.278-32.582    c16.419-21.845,25.835-50.787,25.835-79.405c0-27.254-8.471-50.762-24.498-67.984c-15.398-16.546-36.636-25.659-59.898-25.659    c-23.172,0-44.412,9.112-59.808,25.657c-16.023,17.221-24.493,40.729-24.493,67.984c0,28.612,9.412,57.553,25.824,79.405    c7.41,9.86,6.878,23.563-1.266,32.583c-9.094,10.075-20.946,16.772-34.302,19.386l-0.458,0.086    c-36.803,6.913-63.515,39.021-63.515,76.344v52.905h48.035v-15.673h-32.362v-37.232c0-29.615,21.086-55.116,50.218-60.84    l0.533-0.1c16.937-3.192,31.975-11.62,43.486-24.373c13.161-14.576,14.071-36.657,2.164-52.501    c-14.203-18.91-22.682-45.074-22.682-69.99c0-23.222,7.019-43.038,20.295-57.306c12.398-13.323,29.563-20.661,48.428-20.661    c18.767,0,35.931,7.337,48.33,20.662c13.28,14.27,20.299,34.086,20.299,57.306c0,24.921-8.482,51.084-22.691,69.988    c-11.905,15.841-10.99,37.921,2.172,52.501c11.515,12.756,26.552,21.184,43.491,24.374c8.198,1.541,15.858,4.629,22.765,9.179    l8.622-13.088C390.285,304.12,380.697,300.252,370.445,298.326z" fill="rgb(123,123,123)"/>
+	</g>
+</g>
+<g>
+	<g>
+		<path class="friend-icon" d="M423.059,325.378c-49.043,0-88.942,39.867-88.942,88.871c0,49.003,39.899,88.87,88.942,88.87S512,463.25,512,414.248    C512,365.245,472.101,325.378,423.059,325.378z M423.059,487.445c-40.4,0-73.268-32.836-73.268-73.196    s32.868-73.197,73.268-73.197c40.4,0,73.267,32.836,73.267,73.197C496.327,454.609,463.459,487.445,423.059,487.445z" fill="rgb(123,123,123)"/>
+	</g>
+</g>
+<g>
+	<g>
+		<polygon class="friend-icon" points="430.896,406.411 430.896,375.883 415.223,375.883 415.223,406.411 384.66,406.411 384.66,422.086     415.223,422.086 415.223,452.612 430.896,452.612 430.896,422.086 461.457,422.086 461.457,406.411   " fill="rgb(123,123,123)"/>
+	</g>
+</g>
+<g>
+	<g>
+		<rect class="friend-icon" x="184.15" y="411.899" width="15.673" height="15.673" fill="rgb(123,123,123)"/>
+	</g>
+</g>
+</svg>
+        </div>
+    </div>
+    <div id="sub-bar">
+        <div id="search-box">
+            <input type="text" placeholder="Search..">
+        </div>
+        <div style="width: 100%;height: 65px"></div>
+        <div class="chatListDom">
+            <img src="http://xdpimage.oss-cn-qingdao.aliyuncs.com/activity/common/share_icon.jpg" style="width: 50px;border-radius: 5px;">
+            <div style="width: 120px;margin-left: 20px;height: 50px;">
+                <div class="chatListTitle">123321</div>
+                <div class="chatListLastUpdate">hellohellohellohellohellohellohellohellohellohello</div>
+            </div>
+            <div style="width: 40px;margin-left: 10px;height: 50px;">
+                <div class="chatListTime">12:23</div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
