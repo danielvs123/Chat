@@ -16,12 +16,12 @@
             width: 70px;background-color: rgb(38,38,38);position: fixed;height: 100%;text-align: center;
             top: 0;left: 0;
         }
-        #sub-bar{
+        .sub-bar{
             width: 270px;background-color: white;position: fixed;height: 100%;text-align: center;
             border-right: 1px solid rgb(229,229,229);left: 70px;
             top: 0;overflow: scroll;
         }
-        #search-box,.chatListDom{
+        #search-box,#friend-search-box,.chatListDom{
             width: 100%;
             height: 65px;
             border-bottom: 1px solid rgb(229,229,229);
@@ -29,18 +29,19 @@
             align-items:center;
             justify-content:center;
         }
-        #search-box{
+        #search-box,#friend-search-box{
             width: 270px;
             position: fixed;
         }
-        #search-box input{
+        
+        #search-box input,#friend-search-box input{
             padding: 6px;
             border: none;
             margin-top: 12px;
             font-size: 17px;
             background-color: rgb(225,225,225);
         }
-        #search-box input:focus{
+        #search-box input:focus,#friend-search-box input:focus{
             background-color: white;
             border: 1px solid rgb(229,229,229);
         }
@@ -66,6 +67,9 @@
             width: 164px;
             overflow: hidden;
         }
+        /*#friendOverAllView{*/
+            /*display: none;*/
+        /*}*/
     </style>
 </head>
 <body>
@@ -120,22 +124,93 @@
 </svg>
         </div>
     </div>
-    <div id="sub-bar">
-        <div id="search-box">
-            <input type="text" placeholder="Search..">
-        </div>
-        <div style="width: 100%;height: 65px"></div>
-        <div class="chatListDom">
-            <img src="http://xdpimage.oss-cn-qingdao.aliyuncs.com/activity/common/share_icon.jpg" style="width: 50px;border-radius: 5px;">
-            <div style="width: 120px;margin-left: 20px;height: 50px;">
-                <div class="chatListTitle">123321</div>
-                <div class="chatListLastUpdate">hellohellohellohellohellohellohellohellohellohello</div>
+    <div id="chatOverAllView">
+        <div class="sub-bar">
+            <div id="search-box">
+                <input type="text" placeholder="Search..">
             </div>
-            <div style="width: 40px;margin-left: 10px;height: 50px;">
-                <div class="chatListTime">12:23</div>
+            <div style="width: 100%;height: 65px">
+                <!--占位置用的-->
+            </div>
+            <div class="chatListDom">
+                <img src="http://xdpimage.oss-cn-qingdao.aliyuncs.com/activity/common/share_icon.jpg" style="width: 50px;border-radius: 5px;">
+                <div style="width: 120px;margin-left: 20px;height: 50px;">
+                    <div class="chatListTitle">123321</div>
+                    <div class="chatListLastUpdate">hellohellohellohellohellohellohellohellohellohello</div>
+                </div>
+                <div style="width: 40px;margin-left: 10px;height: 50px;">
+                    <div class="chatListTime">12:23</div>
+                </div>
             </div>
         </div>
     </div>
+    <div id="friendOverAllView">
+        <div class="sub-bar">
+            <div id="friend-search-box">
+                <input type="text" placeholder="Search..">
+            </div>
+            <div style="width: 100%;height: 65px">
+                <!--占位置用的-->
+            </div>
+            <div onclick="showNewFriend()" style="width: 100%;height: 40px;display:flex;align-items:center;justify-content:center;">
+                <div id="new-friend-arrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" width="12px" height="12px" viewBox="0 0 451.846 451.847" style="enable-background:new 0 0 451.846 451.847;" xml:space="preserve">
+<g>
+	<path d="M345.441,248.292L151.154,442.573c-12.359,12.365-32.397,12.365-44.75,0c-12.354-12.354-12.354-32.391,0-44.744   L278.318,225.92L106.409,54.017c-12.354-12.359-12.354-32.394,0-44.748c12.354-12.359,32.391-12.359,44.75,0l194.287,194.284   c6.177,6.18,9.262,14.271,9.262,22.366C354.708,234.018,351.617,242.115,345.441,248.292z" fill="rgb(216,216,216)"/>
+</g>
+</svg>
+                </div>
+                <div style="width: 220px;margin-left:10px;height: 40px;line-height: 40px;text-align: left">新的朋友</div>
+            </div>
+            <div id="friend-request-list" style="width: 100%;display: none;background-color: navy;height: 90px"></div>
+            <div onclick="showTotalFriend()" style="width: 100%;height: 40px;display:flex;align-items:center;justify-content:center;">
+                <div id="friend-arrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" width="12px" height="12px" viewBox="0 0 451.846 451.847" style="enable-background:new 0 0 451.846 451.847;" xml:space="preserve">
+<g>
+	<path d="M345.441,248.292L151.154,442.573c-12.359,12.365-32.397,12.365-44.75,0c-12.354-12.354-12.354-32.391,0-44.744   L278.318,225.92L106.409,54.017c-12.354-12.359-12.354-32.394,0-44.748c12.354-12.359,32.391-12.359,44.75,0l194.287,194.284   c6.177,6.18,9.262,14.271,9.262,22.366C354.708,234.018,351.617,242.115,345.441,248.292z" fill="rgb(216,216,216)"/>
+</g>
+</svg>
+                </div>
+                <div style="width: 220px;margin-left:10px;height: 40px;line-height: 40px;text-align: left">联系人</div>
+            </div>
+            <div id="friend-list" style="width: 100%;display: none;background-color: navy;height: 90px"></div>
+        </div>
+    </div>
 </div>
+<script
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+<script type="application/javascript">
+    $friendOverAllView = $('#friendOverAllView');
+    $chatOverAllView = $('#chatOverAllView');
+    $friendIcon = $('.friend-icon');
+    $messageIcon = $('.message-icon');
+    $messageIcon.attr("fill","green");
+    $('#friend-box').click(function () {
+        $friendOverAllView.show();
+        $chatOverAllView.hide();
+        $messageIcon.attr("fill","rgb(123,123,123)");
+        $friendIcon.attr("fill","green");
+    });
+    $('#message-box').click(function () {
+        $friendOverAllView.hide();
+        $chatOverAllView.show();
+        $friendIcon.attr("fill","rgb(123,123,123)");
+        $messageIcon.attr("fill","green");
+    });
+    function showNewFriend() {
+        $('#new-friend-arrow').css("transform","rotate(90deg)");
+        $('#friend-arrow').css("transform","rotate(0deg)");
+        $('#friend-request-list').show();
+        $('#friend-list').hide();
+    }
+    function showTotalFriend() {
+        $('#new-friend-arrow').css("transform","rotate(0deg)");
+        $('#friend-arrow').css("transform","rotate(90deg)");
+        $('#friend-request-list').hide();
+        $('#friend-list').show();
+    }
+</script>
 </body>
 </html>
