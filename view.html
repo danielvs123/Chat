@@ -32,6 +32,7 @@
         #search-box,#friend-search-box{
             width: 270px;
             position: fixed;
+            background-color: white;
         }
         
         #search-box input,#friend-search-box input{
@@ -70,6 +71,27 @@
         /*#friendOverAllView{*/
             /*display: none;*/
         /*}*/
+        .friend-list-dom{
+            width: 94%;
+            height: 40px;
+            text-align: center;
+            margin-bottom: 10px;
+            margin-left: 6%;
+        }
+        .friend-list-dom-img{
+            width: 28px;
+            margin-left: 20px;
+            float: left;
+            border-radius: 2px;
+        }
+        .friend-list-dom-name{
+            width: 60%;
+            margin-left: 23%;
+            text-align: left;
+            line-height: 28px;
+            height: 45px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -173,7 +195,8 @@
                 </div>
                 <div style="width: 220px;margin-left:10px;height: 40px;line-height: 40px;text-align: left">联系人</div>
             </div>
-            <div id="friend-list" style="width: 100%;display: none;background-color: navy;height: 90px"></div>
+            <div id="friend-list" style="width: 100%;margin-top: 15px">
+            </div>
         </div>
     </div>
 </div>
@@ -181,6 +204,7 @@
         src="https://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
+<script src="pinyin.js"></script>
 <script type="application/javascript">
     $friendOverAllView = $('#friendOverAllView');
     $chatOverAllView = $('#chatOverAllView');
@@ -210,6 +234,80 @@
         $('#friend-arrow').css("transform","rotate(90deg)");
         $('#friend-request-list').hide();
         $('#friend-list').show();
+    }
+
+
+    //绘制好友列表
+    function IndexedList() {
+        this.dataStore = {
+
+        };
+        this.chnReg = /^[\u2E80-\u9FFF]+$/;
+        this.engReg = /^[a-z]+$/;
+        this.push = function (head,word) {
+            if (this.dataStore[head] === undefined){
+                this.dataStore[head] = [word];
+            }else{
+                this.dataStore[head].push(word);
+            }
+        };
+        this.check = function (word) {
+            if (this.chnReg.test(word)){
+                //中文
+                var str=" "+ parseInt(word.charCodeAt(0),10).toString(16);
+                var firstPart = str.substr(0,4).toUpperCase().replace(" ",""),
+                    secondPart = str.substr(4,5).toUpperCase();
+                var rtn = py[firstPart][secondPart][1];
+                if (this.engReg.test(rtn)){
+                    this.push(rtn,word);
+                }else{
+                    this.push("Not",word);
+                }
+            }else{
+                if (this.engReg.test(word)){
+                    //英文
+                    this.push(word[0],word);
+                }else{
+                    this.push("Not",word);
+                }
+            }
+        };
+        this.ascii = function (a) {
+            return a.charCodeAt(0);
+        };
+        this.alphabet = function (a) {
+            return String.fromCharCode(a);
+        };
+        this.getSortedList = function () {
+            var rtn = [];
+            for (var i = 97;i<=122;i++){
+                var data = this.dataStore[this.alphabet(i)];
+                if (data!==undefined){
+                    for (var j = 0;j<data.length;j++){
+                        rtn.push(data[j]);
+                    }
+                }
+            }
+            if (this.dataStore["Not"]!==undefined){
+                var data = this.dataStore["Not"];
+                for (var j = 0;j<data.length;j++){
+                    rtn.push(data[j]);
+                }
+            }
+            return rtn;
+        }
+    }
+    var string = ["abc","你好","可以吗","啊啊啊","~~~"];
+    var index = new IndexedList();
+    for (var i = 0;i<string.length;i++){
+        index.check(string[i]);
+    }
+    var arr = index.getSortedList();
+    for (var i = 0;i<arr.length;i++){
+        $( "#friend-list" ).append( '<div class="friend-list-dom">' +
+            '                    <img src="http://xdpimage.oss-cn-qingdao.aliyuncs.com/activity/common/share_icon.jpg" class="friend-list-dom-img">' +
+            '                    <div class="friend-list-dom-name">'+ arr[i] +'</div>' +
+            '                </div>' );
     }
 </script>
 </body>
