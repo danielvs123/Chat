@@ -80,7 +80,7 @@ var acceptData = {
 };
 
 app.get('/', function(req, res){
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(__dirname + '/view.html');
 });
 
 app.post('/getFriendList',function (req,res) {
@@ -199,10 +199,10 @@ io.on('connection', function(socket){
                     data:result
                 }))
             }
-            connection.query("UPDATE privateChat SET privateChat.status = 0 WHERE privateChat.toId = '"+uid+"' and privateChat.status = 1", function (err, result) {
-                if (err) throw err;
-                console.log(result.affectedRows + " record(s) updated");
-            });
+            // connection.query("UPDATE privateChat SET privateChat.status = 0 WHERE privateChat.toId = '"+uid+"' and privateChat.status = 1", function (err, result) {
+            //     if (err) throw err;
+            //     console.log(result.affectedRows + " record(s) updated");
+            // });
         });
     });
     socket.on('disconnect', function(){
