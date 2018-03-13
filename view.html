@@ -507,11 +507,7 @@
 
 
 
-    $('#messageInput').keyup(function(event) {
-        if (event.keyCode === 13) {
-            //回车提交
-        }
-    });
+    $messageInput = $('#messageInput');
 </script>
 <script type="application/javascript">
     //测试的js
@@ -571,6 +567,18 @@
                         msg:data.data.msg
                     });
                 }
+            }
+        });
+
+        $messageInput.keydown(function(event) {
+            if (event.keyCode === 13) {
+                //回车提交   TODO
+                var value = $messageInput.val();
+                if (value !== ""){
+                    socket.emit("privateChat",currentOnFocusUser,value);
+                    printMySendMessage(value);
+                }
+                $messageInput.val("");
             }
         });
     }
