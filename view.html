@@ -114,6 +114,9 @@
         #chat-view-detail{
             display: none;
         }
+        #chat-detail{
+            overflow: scroll;
+        }
     </style>
     <style type="text/css">
         /* 微信气泡 */
@@ -348,7 +351,7 @@
             <div style="width: 100%;height: 65px;text-align: center;line-height: 65px;font-size: 26px" id="chat-view-detail-name">
                 NAME
             </div>
-            <div style="width: 100%;height: 1px;background-color: rgb(229,229,229);margin-bottom: 10px"></div>
+            <div style="width: 100%;height: 1px;background-color: rgb(229,229,229);"></div>
             <div id="chat-detail">
             </div>
             <textarea id="messageInput" style="width: 656px;height: 150px;position: fixed;bottom: 0;left: 340px;"></textarea>
@@ -520,6 +523,8 @@
         friendsInfo = {},
         friendViewRenderer = new FriendViewStack(),
         liveChatRenderer = new FullChatInfo();
+
+    var chatDetail = document.getElementById("chat-detail");
     $(".robot").click(function () {
         $('#robot_outer').hide();
         $('#body-container').show();
@@ -528,6 +533,14 @@
         getPersonalInfo();
         getFriendList();
         connect();
+        setChatHeight();
+    });
+
+    function setChatHeight(){
+        $('#chat-detail').css("height",(parseInt(document.getElementById("body-container").clientHeight) - 220)+"px" );
+    }
+    $( window ).resize(function() {
+        setChatHeight();
     });
 
     function connect() {
@@ -539,6 +552,8 @@
         socket.on("mailBox"+uid,function (msg) {
             var data = JSON.parse(msg),
                 type = data.type;
+            $('#chatList').html("");
+            console.log(friendViewRenderer.dataStore);
             if (type === 1){
                 for (var i = data.data.length-1;i>=0;i--){
                     friendViewRenderer.push(data.data[i]);
@@ -688,7 +703,8 @@
             '            </span>' +
             '            <div class="speech right">' + msg +
             '        </div>' +
-            '        </div>')
+            '        </div>');
+        autoMoveToButton();
     }
     
     function printMyGetMessage(msg,id) {
@@ -698,7 +714,13 @@
             '                 </span>' +
             '                    <div class="speech left">' + msg +
             '                    </div>' +
-            '                </div>')
+            '                </div>');
+        autoMoveToButton();
+    }
+
+    //自动移动到聊天最底端
+    function autoMoveToButton() {
+        chatDetail.scrollTop = chatDetail.scrollHeight;
     }
 
 
