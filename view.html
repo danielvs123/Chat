@@ -9,8 +9,9 @@
             padding: 0;
         }
         #body-container{
-            width: 100%;
+            width: 1000px;
             height: 100vh;
+            border-right: 1px solid rgb(229,229,229);
         }
         #main-bar{
             width: 70px;background-color: rgb(38,38,38);position: fixed;height: 100%;text-align: center;
@@ -54,7 +55,7 @@
         }
         .chatListTitle{
             text-align: left;
-            font-size: 19px;
+            font-size: 17px;
         }
         .chatListTime{
             text-align: left;
@@ -63,14 +64,14 @@
         }
         .chatListLastUpdate{
             text-align: left;
-            font-size: 17px;
+            font-size: 14px;
             color: rgb(175,158,144);
             width: 164px;
             overflow: hidden;
         }
-        /*#friendOverAllView{*/
-            /*display: none;*/
-        /*}*/
+        #friendOverAllView{
+            display: none;
+        }
         .friend-list-dom{
             width: 94%;
             height: 40px;
@@ -92,12 +93,188 @@
             height: 45px;
             font-size: 14px;
         }
+        #send-message-btn{
+            margin-left: 25%;width: 50%;height: 40px;background-color: rgb(38,170,40);margin-top: 30px;border-radius: 5px;text-align: center;line-height: 40px;color:white
+        }
+        textarea{
+            border:0;
+            background-color:transparent;
+            color: #666464;
+            border-top: 1px solid rgb(225,225,225);
+            height: auto;
+            outline:none;
+            resize: none;
+        }
+        textarea:focus{
+            outline:none;
+        }
+        #personal_info{
+            display: none;
+        }
+        #chat-view-detail{
+            display: none;
+        }
+    </style>
+    <style type="text/css">
+        /* 微信气泡 */
+        div.speech {
+            float: left;
+            margin: 10px 0;
+            padding: 8px;
+            table-layout: fixed;
+            word-break: break-all;
+            position: relative;
+            background: -webkit-gradient( linear, 50% 0%, 50% 100%, from(#ffffff), color-stop(0.1, #ececec), color-stop(0.5, #dbdbdb), color-stop(0.9, #dcdcdc), to(#8c8c8c) );
+            border: 1px solid #989898;
+            border-radius: 8px;
+        }
+        div.speech:before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            left: 15px;
+            top: -20px;
+            border: 10px solid;
+            border-color: transparent transparent #989898 transparent;
+        }
+        div.speech:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            left: 17px;
+            top: -16px;
+            border: 8px solid;
+            border-color: transparent transparent #ffffff transparent;
+        }
+        div.speech.right {
+            display: inline-block;
+            box-shadow: -2px 2px 5px #CCC;
+            margin-right: 10px;
+            max-width: 75%;
+            float: right;
+            background: -webkit-gradient( linear, 50% 0%, 50% 100%, from(#e4ffa7), color-stop(0.1, #bced50), color-stop(0.4, #aed943), color-stop(0.8, #a7d143), to(#99BF40) );
+        }
+        div.speech.right:before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            top: 9px;
+            bottom: auto;
+            left: auto;
+            right: -10px;
+            border-width: 9px 0 9px 10px;
+            border-color: transparent #989898;
+        }
+        div.speech.right:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            top: 10px;
+            bottom: auto;
+            left: auto;
+            right: -8px;
+            border-width: 8px 0 8px 9px;
+            border-color: transparent #bced50;
+        }
+        div .left {
+            display: inline-block;
+            box-shadow: 2px 2px 2px #CCCCCC;
+            margin-left: 10px;
+            max-width: 75%;
+            position: relative;
+            background: -webkit-gradient( linear, 50% 0%, 50% 100%, from(#ffffff), color-stop(0.1, #eae8e8), color-stop(0.4, #E3E3E3), color-stop(0.8, #DFDFDF), to(#D9D9D9) );
+        }
+        div .left:before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            top: 9px;
+            bottom: auto;
+            left: -10px;
+            border-width: 9px 10px 9px 0;
+            border-color: transparent #989898;
+        }
+        div .left:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            top: 10px;
+            bottom: auto;
+            left: -8px;
+            border-width: 8px 9px 8px 0;
+            border-color: transparent #eae8e8;
+        }
+        .leftimg {
+            float: left;
+            margin-top: 10px;
+        }
+        .rightimg {
+            float: right;
+            margin-top: 10px;
+        }
+        .leftd {
+            clear: both;
+            float: left;
+            margin-left: 10px;
+        }
+        .rightd {
+            clear: both;
+            float: right;
+            margin-right: 10px;
+        }
+
+        .leftd_h{
+            width: 39px;
+            height: 39px;
+            border-radius: 100%;
+            display: block;
+            float: left;
+            overflow: hidden;
+        }
+
+        .leftd_h img{
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+        .rightd_h{
+            width: 39px;
+            height: 39px;
+            border-radius: 100%;
+            display: block;
+            float: right;
+            overflow: hidden;
+        }
+
+        .rightd_h img{
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+    </style>
+    <style type="text/css">
+        #body-container{
+            display: none;
+        }
+        #robot_outer{
+            width: 100px;height: 150px;position: fixed;right: 0;border:1px solid gray;z-index: 99;top: 0;
+        }
+        .robot{
+            width: 100%;height: 50px;line-height: 50px;text-align: center;
+        }
     </style>
 </head>
 <body>
 <div id="body-container">
     <div id="main-bar">
-        <img src="http://xdpimage.oss-cn-qingdao.aliyuncs.com/activity/common/share_icon.jpg" style="width: 70%;border-radius: 10px;margin-top: 60px">
+        <img class="my-avatar" src="http://xdpimage.oss-cn-qingdao.aliyuncs.com/activity/common/share_icon.jpg" style="width: 70%;border-radius: 10px;margin-top: 60px">
         <div class="selector-box" id="message-box">
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 473 473" style="enable-background:new 0 0 473 473;" xml:space="preserve" width="30px" height="30px">
 <g>
@@ -154,16 +331,27 @@
             <div style="width: 100%;height: 65px">
                 <!--占位置用的-->
             </div>
-            <div class="chatListDom">
-                <img src="http://xdpimage.oss-cn-qingdao.aliyuncs.com/activity/common/share_icon.jpg" style="width: 50px;border-radius: 5px;">
-                <div style="width: 120px;margin-left: 20px;height: 50px;">
-                    <div class="chatListTitle">123321</div>
-                    <div class="chatListLastUpdate">hellohellohellohellohellohellohellohellohellohello</div>
-                </div>
-                <div style="width: 40px;margin-left: 10px;height: 50px;">
-                    <div class="chatListTime">12:23</div>
-                </div>
+            <div style="width: 100%" id="chatList">
+                <!--<div class="chatListDom">-->
+                    <!--<img src="http://xdpimage.oss-cn-qingdao.aliyuncs.com/activity/common/share_icon.jpg" style="width: 38px;border-radius: 5px;">-->
+                    <!--<div style="width: 120px;margin-left: 20px;height: 50px;">-->
+                        <!--<div class="chatListTitle">123321</div>-->
+                        <!--<div class="chatListLastUpdate">hellohellohellohellohellohellohellohellohellohello</div>-->
+                    <!--</div>-->
+                    <!--<div style="width: 40px;margin-left: 10px;height: 50px;">-->
+                        <!--<div class="chatListTime">12:23</div>-->
+                    <!--</div>-->
+                <!--</div>-->
             </div>
+        </div>
+        <div style="width: 660px; position: fixed; left: 340px;top: 0" id="chat-view-detail">
+            <div style="width: 100%;height: 65px;text-align: center;line-height: 65px;font-size: 26px" id="chat-view-detail-name">
+                NAME
+            </div>
+            <div style="width: 100%;height: 1px;background-color: rgb(229,229,229);margin-bottom: 10px"></div>
+            <div id="chat-detail">
+            </div>
+            <textarea id="messageInput" style="width: 656px;height: 150px;position: fixed;bottom: 0;left: 340px;"></textarea>
         </div>
     </div>
     <div id="friendOverAllView">
@@ -195,16 +383,35 @@
                 </div>
                 <div style="width: 220px;margin-left:10px;height: 40px;line-height: 40px;text-align: left">联系人</div>
             </div>
-            <div id="friend-list" style="width: 100%;margin-top: 15px">
+            <div id="friend-list" style="width: 100%;margin-top: 15px;display: none;">
+            </div>
+        </div>
+        <div id="personal_info" style="width: 660px; position: fixed; left: 340px;">
+            <div style="width: 60%;margin-left: 20%;margin-top: 50px;height: 300px;text-align: center">
+                <div style="width: 100%;height: 100px;border-bottom: 1px solid rgb(229,229,229);">
+                    <div style="width: 60%;float: left;text-align: left;font-size: 28px;" id="personal_info_name">这里是名字</div>
+                    <div style="width: 40%;float: left">
+                        <img id="personal_info_avatar" src="http://xdpimage.oss-cn-qingdao.aliyuncs.com/activity/common/share_icon.jpg" style="width: 50%">
+                    </div>
+                    <div style="clear: both"></div>
+                </div>
+                <div id="send-message-btn">发消息</div>
             </div>
         </div>
     </div>
+</div>
+<div id="robot_outer">
+    <div class="robot">userIdDemo1</div>
+    <div class="robot">userIdDemo2</div>
+    <div class="robot">userIdDemo3</div>
 </div>
 <script
         src="https://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
-<script src="pinyin.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://cdn.rawgit.com/mozilla/localForage/master/dist/localforage.js"></script>
+<script src="http://47.89.187.42/js/pinyin.js"></script>
 <script type="application/javascript">
     $friendOverAllView = $('#friendOverAllView');
     $chatOverAllView = $('#chatOverAllView');
@@ -297,17 +504,286 @@
             return rtn;
         }
     }
-    var string = ["abc","你好","可以吗","啊啊啊","~~~"];
-    var index = new IndexedList();
-    for (var i = 0;i<string.length;i++){
-        index.check(string[i]);
+
+
+
+    $('#messageInput').keyup(function(event) {
+        if (event.keyCode === 13) {
+            //回车提交
+        }
+    });
+</script>
+<script type="application/javascript">
+    //测试的js
+    var uid = "",
+        currentOnFocusUser = "",
+        personalInfo = {
+            uid:"",
+            avatar:""
+        },
+        friendsInfo = {},
+        friendViewRenderer = new FriendViewStack(),
+        liveChatRenderer = new FullChatInfo();
+    $(".robot").click(function () {
+        $('#robot_outer').hide();
+        $('#body-container').show();
+        uid =  this.innerText;
+        document.title = uid;
+        getPersonalInfo();
+        getFriendList();
+        connect();
+    });
+
+    function connect() {
+        var socket = io();
+        socket.emit("getPersonalInfo",{
+            id:uid
+        });
+        var opposite = (uid === "userIdDemo1")?"userIdDemo2":"userIdDemo1";
+        socket.on("mailBox"+uid,function (msg) {
+            var data = JSON.parse(msg),
+                type = data.type;
+            if (type === 1){
+                for (var i = data.data.length-1;i>=0;i--){
+                    friendViewRenderer.push(data.data[i]);
+                    liveChatRenderer.push({
+                        id:data.data[i].fromId,
+                        msg:data.data[i].msg
+                    });
+                }
+                friendViewRenderer.print();
+                friendViewRenderer.renderFriendView();
+            }else{
+                var tmpData = {
+                    fromId:data.data.id,
+                    toId:uid,
+                    msg:data.data.msg
+                };
+                friendViewRenderer.push(tmpData);
+                friendViewRenderer.renderFriendView();
+                liveChatRenderer.push({
+                    id:data.data.id,
+                    msg:data.data.msg
+                });
+                if (data.data.id === onShowedChat){
+                    liveChatRenderer.appendDiv({
+                        id:data.data.id,
+                        msg:data.data.msg
+                    });
+                }
+            }
+        });
     }
-    var arr = index.getSortedList();
-    for (var i = 0;i<arr.length;i++){
+
+    function getPersonalInfo() {
+        $.ajax({
+            type: 'POST',
+            url: "getPrivateInfo",
+            data: {
+                id:uid,
+                accessToken:3333
+            },
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.status === 0){
+                    $('.my-avatar').attr("src",data.data.avatar);
+                    personalInfo = {
+                        name:data.data.name,
+                        avatar:data.data.avatar
+                    }
+                }
+            }
+        });
+    }
+
+    function getFriendList() {
+        //获取好友列表;
+        $.ajax({
+            type: 'POST',
+            url: "getFriendList",
+            data: {
+                id:uid,
+                accessToken:3333
+            },
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.status === 0){
+                    for (var i = 0;i<data.length;i++){
+                        appendFriend(data.data[i].avatar,data.data[i].name,data.data[i].id);
+                        //插入好友列表
+                        friendsInfo[data.data[i].id] = {
+                            name:data.data[i].name,
+                            avatar:data.data[i].avatar
+                        };
+                    }
+                }
+                console.log(friendsInfo);
+            }
+        });
+    }
+    function appendFriend(avatar,name,id) {
         $( "#friend-list" ).append( '<div class="friend-list-dom">' +
-            '                    <img src="http://xdpimage.oss-cn-qingdao.aliyuncs.com/activity/common/share_icon.jpg" class="friend-list-dom-img">' +
-            '                    <div class="friend-list-dom-name">'+ arr[i] +'</div>' +
+            '                    <img src="'+avatar+'" class="friend-list-dom-img">' +
+            '                    <div class="friend-list-dom-name" onclick = "getFriendDetail(this)" data-id="'+id+'">'+ name +'</div>' +
             '                </div>' );
+    }
+    
+    function getFriendDetail(ele) {
+        var id = ele.getAttribute("data-id");
+        $('#personal_info_avatar').attr('src',friendsInfo[id].avatar);
+        $('#personal_info_name').text(friendsInfo[id].name);
+        $('#personal_info').show();
+    }
+
+    function getChatView(ele) {
+        // chat-view-detail
+        var id = ele.getAttribute("data-id");
+        $('.chatListDom').css("background-color","white");
+        ele.style.backgroundColor = "rgb(215,215,215)";
+        if (id !== currentOnFocusUser){
+            $('#chat-view-detail').show();
+            currentOnFocusUser = id;
+            $('#chat-view-detail-name').text(friendsInfo[currentOnFocusUser].name);
+            $('#chat-detail').html("");
+            var data =(liveChatRenderer.dataStore[currentOnFocusUser]);
+            for (var i = 0;i<data.length;i++){
+                var chatData = data[i],
+                    msg = chatData.msg;
+                if (chatData.type === 0){
+                    printMyGetMessage(msg,currentOnFocusUser);
+                }else{
+                    printMySendMessage(msg);
+                }
+            }
+        }
+    }
+
+    function printFriendView(data) {
+        $('#chatList').append('' +
+            '            <div class="chatListDom" onclick="getChatView(this)" data-id = "'+data.id+'">' +
+            '                <img src="'+data.avatar+'" style="width: 38px;border-radius: 5px;">' +
+            '                <div style="width: 120px;margin-left: 20px;height: 50px;">' +
+            '                    <div class="chatListTitle">'+ data.name+'</div>' +
+            '                    <div class="chatListLastUpdate">'+data.msg+'</div>' +
+            '                </div>' +
+            '                <div style="width: 40px;margin-left: 10px;height: 50px;">' +
+            '                    <div class="chatListTime">12:23</div>' +
+            '                </div>' +
+            '            </div>')
+    }
+    
+    function printMySendMessage(msg) {
+        $('#chat-detail').append('' +
+            '<div class="rightd">' +
+            '            <span class="rightd_h">' +
+            '            <img src="'+personalInfo.avatar+'"/>' +
+            '            </span>' +
+            '            <div class="speech right">' + msg +
+            '        </div>' +
+            '        </div>')
+    }
+    
+    function printMyGetMessage(msg,id) {
+        $('#chat-detail').append('                <div class="leftd">' +
+            '                <span class="leftd_h">' +
+            '                    <img src="'+friendsInfo[id].avatar+'" />' +
+            '                 </span>' +
+            '                    <div class="speech left">' + msg +
+            '                    </div>' +
+            '                </div>')
+    }
+
+
+    //数据结构
+    //左侧好友列表的Stack();
+    function FriendViewStack() {
+        this.dataStore = [];
+        this.push = function (data) {
+            var arr = [],
+                id = (data.toId === uid)?data.fromId:data.toId,
+                //0代表接受 1代表送出
+                type = (data.toId === uid)?0:1;
+            for (var i = 0;i<this.dataStore.length;i++){
+                arr.push(this.dataStore[i].id);
+            }
+            var indexOf = arr.indexOf(id);
+            var tmpData = {};
+            //就是没有这个数据
+            if (indexOf === -1){
+                tmpData = {
+                    id: id,
+                    type: type,
+                    msg: data.msg
+                }
+            }else{
+                tmpData = {
+                    id: id,
+                    type: type,
+                    msg: data.msg
+                };
+                this.dataStore.splice(indexOf,1);
+            }
+            this.dataStore.unshift(tmpData);
+        };
+        //测试用
+        this.print = function () {
+            console.log(this.dataStore);
+        };
+        this.renderFriendView = function () {
+            for (var i = 0;i < this.dataStore.length ; i++){
+                printFriendView({
+                    avatar:friendsInfo[this.dataStore[i].id].avatar,
+                    name:friendsInfo[this.dataStore[i].id].name,
+                    msg:this.dataStore[i].msg,
+                    id:this.dataStore[i].id
+                })
+            }
+        }
+    }
+
+    function FullChatInfo() {
+        this.dataStore = {};
+        this.push = function (data) {
+            var id = data.id,
+                msg = data.msg,
+                type = 0;
+            if (this.dataStore[id] !== undefined){
+                this.dataStore[id].push({
+                    msg:msg,
+                    type:type
+                })
+            } else{
+                this.dataStore[id] = [{
+                    msg:msg,
+                    type:type
+                }]
+            }
+        };
+        //测试用
+        this.print = function () {
+            console.log(this.dataStore);
+        };
+        //绘制
+        this.render = function (id) {
+            document.getElementById("chatTotal").innerHTML = "";
+            $('#chat').show();
+            if (this.dataStore[id]!==undefined){
+                var dataset = this.dataStore[id];
+                for (var i = 0;i<dataset.length;i++){
+                    var type = dataset[i].type,
+                        msg = dataset[i].msg;
+                    if (type === 0){
+                        getter(msg,id);
+                    }else{
+                        sender(msg);
+                    }
+                }
+            }
+        };
+        //这里是用来添加新的聊天用的
+        this.appendDiv = function (data) {
+            // getter(data.msg,data.id);
+        }
     }
 </script>
 </body>
