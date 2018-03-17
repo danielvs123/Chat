@@ -553,7 +553,7 @@
             var data = JSON.parse(msg),
                 type = data.type;
             $('#chatList').html("");
-            console.log(friendViewRenderer.dataStore);
+            console.log(currentOnFocusUser);
             if (type === 1){
                 for (var i = data.data.length-1;i>=0;i--){
                     friendViewRenderer.push(data.data[i]);
@@ -576,7 +576,7 @@
                     id:data.data.id,
                     msg:data.data.msg
                 });
-                if (data.data.id === onShowedChat){
+                if (data.data.id === currentOnFocusUser){
                     liveChatRenderer.appendDiv({
                         id:data.data.id,
                         msg:data.data.msg
@@ -632,6 +632,7 @@
                 data = JSON.parse(data);
                 if (data.status === 0){
                     for (var i = 0;i<data.length;i++){
+                        liveChatRenderer.initEmptyList(data.data[i].id);
                         appendFriend(data.data[i].avatar,data.data[i].name,data.data[i].id);
                         //插入好友列表
                         friendsInfo[data.data[i].id] = {
@@ -644,15 +645,17 @@
             }
         });
     }
+
     function appendFriend(avatar,name,id) {
-        $( "#friend-list" ).append( '<div class="friend-list-dom">' +
+        $( "#friend-list" ).append( '<div class="friend-list-dom"  onclick = "getFriendDetail(this)" data-id="'+id+'">' +
             '                    <img src="'+avatar+'" class="friend-list-dom-img">' +
-            '                    <div class="friend-list-dom-name" onclick = "getFriendDetail(this)" data-id="'+id+'">'+ name +'</div>' +
+            '                    <div class="friend-list-dom-name" >'+ name +'</div>' +
             '                </div>' );
     }
     
     function getFriendDetail(ele) {
         var id = ele.getAttribute("data-id");
+        $('#send-message-btn').attr("data-id",id);
         $('#personal_info_avatar').attr('src',friendsInfo[id].avatar);
         $('#personal_info_name').text(friendsInfo[id].name);
         $('#personal_info').show();
@@ -669,13 +672,15 @@
             $('#chat-view-detail-name').text(friendsInfo[currentOnFocusUser].name);
             $('#chat-detail').html("");
             var data =(liveChatRenderer.dataStore[currentOnFocusUser]);
-            for (var i = 0;i<data.length;i++){
-                var chatData = data[i],
-                    msg = chatData.msg;
-                if (chatData.type === 0){
-                    printMyGetMessage(msg,currentOnFocusUser);
-                }else{
-                    printMySendMessage(msg);
+            if (data !== undefined){
+                for (var i = 0;i<data.length;i++){
+                    var chatData = data[i],
+                        msg = chatData.msg;
+                    if (chatData.type === 0){
+                        printMyGetMessage(msg,currentOnFocusUser);
+                    }else{
+                        printMySendMessage(msg);
+                    }
                 }
             }
         }
@@ -683,7 +688,7 @@
 
     function printFriendView(data) {
         $('#chatList').append('' +
-            '            <div class="chatListDom" onclick="getChatView(this)" data-id = "'+data.id+'">' +
+            '            <div id="startChat'+data.id+'" class="chatListDom" onclick="getChatView(this)" data-id = "'+data.id+'">' +
             '                <img src="'+data.avatar+'" style="width: 38px;border-radius: 5px;">' +
             '                <div style="width: 120px;margin-left: 20px;height: 50px;">' +
             '                    <div class="chatListTitle">'+ data.name+'</div>' +
@@ -723,6 +728,17 @@
         chatDetail.scrollTop = chatDetail.scrollHeight;
     }
 
+    $('#send-message-btn').click(function () {
+        var id = this.getAttribute("data-id");
+        $('#message-box').click();
+        var ele = (document.getElementById("startChat"+id));
+        if (ele === null){
+            friendViewRenderer.pushNew(id);
+            $('#startChat'+id).click();
+        }else{
+            $('#startChat'+id).click();
+        }
+    });
 
     //数据结构
     //左侧好友列表的Stack();
@@ -755,16 +771,26 @@
             }
             this.dataStore.unshift(tmpData);
         };
+        this.pushNew = function (id) {
+            this.dataStore.unshift({
+                id: id,
+                type: 0,
+                msg: ""
+            });
+            this.renderFriendView();
+        };
         //测试用
         this.print = function () {
             console.log(this.dataStore);
         };
         this.renderFriendView = function () {
+            $('#chatList').html("");
             for (var i = 0;i < this.dataStore.length ; i++){
+                var msg = (this.dataStore[i].msg!==undefined)?this.dataStore[i].msg:"";
                 printFriendView({
                     avatar:friendsInfo[this.dataStore[i].id].avatar,
                     name:friendsInfo[this.dataStore[i].id].name,
-                    msg:this.dataStore[i].msg,
+                    msg:msg,
                     id:this.dataStore[i].id
                 })
             }
@@ -789,6 +815,11 @@
                 }]
             }
         };
+        this.initEmptyList = function (id) {
+            if (this.dataStore[id] === undefined){
+                this.dataStore[id] = [];
+            }
+        };
         //测试用
         this.print = function () {
             console.log(this.dataStore);
@@ -811,8 +842,9 @@
             }
         };
         //这里是用来添加新的聊天用的
-        this.appendDiv = function (data) {
-            // getter(data.msg,data.id);
+        this.appendDiv = function (data){
+            console.log(data.msg);
+            printMyGetMessage(data.msg,data.id);
         }
     }
 </script>
