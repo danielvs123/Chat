@@ -593,6 +593,8 @@
                     socket.emit("privateChat",currentOnFocusUser,value);
                     printMySendMessage(value);
                 }
+
+                event.preventDefault();
                 $messageInput.val("");
             }
         });
