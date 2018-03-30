@@ -1,7 +1,7 @@
 - info
 
   - Based on Socket.io
-  - Demo is available at  `http://47.89.187.42:3000/`
+  - Demo is available at  `https://shuaiyixu.xyz/`
 
 - how to use
 
